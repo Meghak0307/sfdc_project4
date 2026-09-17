@@ -1,0 +1,43 @@
+name: Salesforce CI CD Pipeline
+
+# 1. Trigger the workflow when code is pushed to your qa branch
+on:
+  push:
+    branches: [ "qa" ]
+
+jobs:
+  deploy-metadata:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Download your repository code onto the GitHub server
+    - name: Checkout Source Code
+      uses: actions/checkout@v4
+
+    # Step 2: Install Node.js
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-with: 20
+
+    # Step 3: Install the Salesforce CLI (sf)
+    - name: Install Salesforce CLI
+      run: npm install -g @salesforce/cli
+
+    # Step 4: Write the private key to a temporary file on the runner
+    - name: Create Server Key File
+      run: echo "${{ secrets.SF_JWT_KEY }}" > server.key
+
+    # Step 5: Authenticate/Log into your Salesforce Org using JWT
+    - name: Authenticate to Salesforce Org
+      run: |
+        sf org login jwt \
+          --client-id ${{ secrets.SF_CONSUMER_KEY }} \
+          --jwt-key-file server.key \
+          --username ${{ secrets.SF_USERNAME }} \
+          --instance-url https://salesforce.com \
+          --set-default
+
+    # Step 6: Deploy code metadata to your Salesforce Org
+    - name: Deploy Metadata
+      run: sf project deploy start --manifest manifest/package.xml
