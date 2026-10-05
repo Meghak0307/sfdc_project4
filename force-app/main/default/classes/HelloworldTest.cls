@@ -1,5 +1,5 @@
 @IsTest
-private class HelloworldTest {
+private class HelloWorldTest {
 
     @IsTest
     static void testGetGreetingWithName() {
