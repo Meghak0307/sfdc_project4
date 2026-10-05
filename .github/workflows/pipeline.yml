@@ -9,7 +9,7 @@
 # BRANCH → ORG MAPPING:
 # develop → DEV Sandbox    (NoTestRun)
 # sit     → SIT Sandbox    (RunLocalTests)
-# uat     → UAT Sandbox    (RunLocalTests)
+# qa     → QA Sandbox    (RunLocalTests)
 # main    → PRODUCTION     (RunAllTestsInOrg)
 # ================================================================
 
@@ -20,13 +20,13 @@ on:
     branches:
       - develop
       - sit
-      - uat
+      - qa
       - main
   pull_request:
     branches:
       - develop
       - sit
-      - uat
+      - qa
       - main
 
 jobs:
@@ -62,11 +62,11 @@ jobs:
             echo "TEST_LEVEL=RunLocalTests" >> $GITHUB_ENV
             echo "ENV_NAME=SIT" >> $GITHUB_ENV
 
-          elif [ "${{ github.ref_name }}" == "uat" ] || \
-               [ "${{ github.base_ref }}" == "uat" ]; then
-            echo "AUTH_URL=${{ secrets.SALESFORCE_AUTH_URL_UAT }}" >> $GITHUB_ENV
+          elif [ "${{ github.ref_name }}" == "qa" ] || \
+               [ "${{ github.base_ref }}" == "qa" ]; then
+            echo "AUTH_URL=${{ secrets.SALESFORCE_AUTH_URL_QA }}" >> $GITHUB_ENV
             echo "TEST_LEVEL=RunLocalTests" >> $GITHUB_ENV
-            echo "ENV_NAME=UAT" >> $GITHUB_ENV
+            echo "ENV_NAME=QA" >> $GITHUB_ENV
 
           elif [ "${{ github.ref_name }}" == "main" ] || \
                [ "${{ github.base_ref }}" == "main" ]; then
